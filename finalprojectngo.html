@@ -1,0 +1,2310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>HopeSprouts Education NGO</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="[https://cdn.jsdelivr.net/npm/chart.js](https://cdn.jsdelivr.net/npm/chart.js)"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --glass: rgba(0,0,0,0.55);
+  }
+  body{
+    font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    background:url('https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=1920&auto=format&fit=crop') no-repeat center center fixed;
+    background-size: cover;
+    color:#fff;
+  }
+  .backdrop{
+    background: var(--glass);
+    border-radius: 14px;
+    padding: 32px;
+    margin: 20px auto;
+    max-width: 1000px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  }
+  .section{display:none; opacity:0; transform:translateY(10px); transition: all .35s ease-in-out;}
+  .section.active{display:block; opacity:1; transform:none;}
+  .navbar .nav-link.active{ color:#ffc107 !important; font-weight:700; }
+  .quiz .form-check-label.correct{ background:rgba(0,255,0,.25); border-radius: 4px; padding: 2px 4px; }
+  .quiz .form-check-label.wrong{ background:rgba(255,0,0,.25); border-radius: 4px; padding: 2px 4px; }
+  .ratio iframe{ border-radius: 10px; }
+  .table-dark-glass{ --bs-table-bg: rgba(33,37,41,.7); --bs-table-striped-bg: rgba(33,37,41,.85); color:#fff; }
+  .badge-soft{ background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.25); }
+  .small-muted{ opacity:.9; font-size:.95rem; }
+  .pointer{cursor:pointer;}
+  #backToTop{
+    display:none; position:fixed; bottom:24px; right:24px; z-index:999;
+    border:none; background:#ffc107; color:#000; width:48px; height:48px; border-radius:50%;
+    box-shadow:0 8px 20px rgba(0,0,0,.35); font-weight:700; transition: all 0.3s ease;
+  }
+  #backToTop:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(0,0,0,.4);
+  }
+  
+  #donate {
+    padding: 2rem;
+    color: #fff;
+  }
+  #donate h2, #donate h5 {
+    color: #ffd700;
+  }
+  #donate .form-control, 
+  #donate .form-select {
+    background: rgba(34, 34, 34, 0.8);
+    color: #fff;
+    border: 1px solid #555;
+  }
+  #donate .form-control:focus,
+  #donate .form-select:focus {
+    background: rgba(34, 34, 34, 0.9);
+    border-color: #ffc107;
+    box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25);
+  }
+  #donate .form-control::placeholder {
+    color: #aaa;
+  }
+  #donate .progress {
+    height: 25px;
+  }
+  #donate .progress-bar {
+    font-weight: bold;
+    font-size: 0.9rem;
+  }
+  #donorList {
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  
+  .error-message {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+  }
+  
+  .success-message {
+    color: #28a745;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+  }
+  
+  .loading-spinner {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border: 0.125rem solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  
+  /* Accessibility improvements */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  
+  @media (max-width: 768px) {
+    .backdrop {
+      margin: 10px;
+      padding: 20px;
+    }
+  }
+</style>
+
+<style>
+/* Quiz Generator Styles */
+.quiz-generator {
+  background: linear-gradient(90deg,#6366f1,#a855f7,#ec4899);
+  border-radius: 20px;
+  padding: 1.5rem;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+.quiz-generator h5 {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+.quiz-generator .form-control {
+  border-radius: 12px 0 0 12px;
+  border: none;
+}
+.quiz-generator .btn-primary {
+  background: white;
+  color: #6366f1;
+  font-weight: bold;
+  border-radius: 0 12px 12px 0;
+}
+</style>
+
+<style>
+    /* Quiz Container */
+.quiz-container {
+  background: linear-gradient(135deg, #ff9a9e, #fad0c4, #fbc2eb, #a6c1ee);
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  color: #fff;
+  max-width: 700px;
+  margin: auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Quiz Title */
+.quiz-title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #000;
+  text-shadow: 1px 1px 5px rgba(0,0,0,0.4);
+}
+
+/* Question Card */
+.quiz-questions .question-card {
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  padding: 20px;
+  margin-bottom: 15px;
+  border-radius: 15px;
+  transition: transform 0.2s, box-shadow 0.3s;
+}
+
+.quiz-questions .question-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+/* Question Text */
+.quiz-questions p {
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #000;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+}
+
+/* Option Card */
+.form-check {
+  background: linear-gradient(90deg, #ffecd2, #fcb69f);
+  margin-bottom: 8px;
+  padding: 10px 15px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+}
+
+.form-check:hover {
+  transform: scale(1.03);
+  background: linear-gradient(90deg, #a1c4fd, #c2e9fb);
+}
+
+/* Radio Input */
+.form-check-input {
+  margin-right: 12px;
+  cursor: pointer;
+}
+
+/* --- ADD THESE LINES BELOW --- */
+.form-check label {
+    color: #000;   /* Makes option text black */
+    font-weight: 500;
+    margin: 0;
+}
+
+.form-check-input {
+    accent-color: #6366f1; /* Makes the radio button itself colored */
+}
+
+/* Selected Answer Colors */
+.correct {
+  background-color: #28a745 !important;
+  color: #fff;
+}
+
+.incorrect {
+  background-color: #dc3545 !important;
+  color: #fff;
+}
+
+/* Submit Button */
+.submit-btn {
+  display: block;
+  width: 100%;
+  background: linear-gradient(45deg, #ff6a00, #ee0979);
+  border: none;
+  color: #fff;
+  font-weight: bold;
+  padding: 12px 0;
+  font-size: 1rem;
+  border-radius: 12px;
+  transition: all 0.3s;
+}
+
+.submit-btn:hover {
+  background: linear-gradient(45deg, #f7971e, #ffd200);
+  transform: scale(1.05);
+}
+
+/* Quiz Result */
+.quiz-result {
+  font-size: 1.2rem;
+  text-align: center;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+}
+
+</style>
+
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark bg-opacity-75 sticky-top">
+  <div class="container-fluid">
+    <a class="navbar-brand pointer" href="#" onclick="showSection('home')" role="button" tabindex="0" onkeypress="if(event.key==='Enter') showSection('home')">HopeSprouts</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav" aria-controls="nav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="nav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link active" href="#" onclick="showSection('home')" role="button" tabindex="0" onkeypress="if(event.key==='Enter') showSection('home')">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('about')" role="button" tabindex="0" onkeypress="if(event.key==='Enter') showSection('about')">About</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('programs')" role="button" tabindex="0" onkeypress="if(event.key==='Enter') showSection('programs')">Programs</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('donate')" role="button" tabindex="0" onkeypress="if(event.key==='Enter') showSection('donate')">Donate</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('volunteer')" role="button" tabindex="0" onkeypress="if(event.key==='Enter') showSection('volunteer')">Volunteer</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('education')" role="button" tabindex="0" onkeypress="if(event.key==='Enter') showSection('education')">Education</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('dashboard')" role="button" tabindex="0" onkeypress="if(event.key==='Enter') showSection('dashboard')">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('leaderboard')" role="button" tabindex="0" onkeypress="if(event.key==='Enter') showSection('leaderboard')">Leaderboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('stories')" role="button" tabindex="0" onkeypress="if(event.key==='Enter') showSection('stories')">Stories</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('contact')" role="button" tabindex="0" onkeypress="if(event.key==='Enter') showSection('contact')">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<section id="home" class="section active backdrop text-center">
+  <h1 class="display-5 fw-bold">Empowering Education for All</h1>
+  <p class="lead">Join us in making quality education accessible to every child.</p>
+  <div class="d-flex gap-2 justify-content-center">
+    <button class="btn btn-warning btn-lg" onclick="showSection('donate')">Donate Now</button>
+    <button class="btn btn-outline-light btn-lg" onclick="showSection('education')">Start Learning</button>
+  </div>
+  <div class="mt-4">
+    <span class="badge rounded-pill badge-soft">Scholarships</span>
+    <span class="badge rounded-pill badge-soft">Volunteer Mentorship</span>
+    <span class="badge rounded-pill badge-soft">Digital Learning</span>
+  </div>
+</section>
+
+<section id="about" class="section backdrop">
+  <h2>About HopeSprouts</h2>
+  <p class="small-muted">
+    HopeSprouts Education NGO enables underprivileged students to learn foundational and technical skills through community support.
+    We operate free classes, run scholarship programs, and publish open learning content with assessments and certificates.
+  </p>
+  <div class="row g-3">
+    <div class="col-md-4">
+      <div class="p-3 bg-dark bg-opacity-50 rounded h-100">
+        <h5>Mission</h5>
+        <p>To provide equitable access to education and skills that unlock opportunities.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="p-3 bg-dark bg-opacity-50 rounded h-100">
+        <h5>Vision</h5>
+        <p>A world where every learner thrives regardless of background.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="p-3 bg-dark bg-opacity-50 rounded h-100">
+        <h5>Values</h5>
+        <p>Inclusivity, Integrity, Impact, and Continuous Learning.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="programs" class="section backdrop">
+  <h2>Our Programs</h2>
+  <div class="row g-3 mt-3">
+
+    <div class="col-md-4">
+      <div class="card h-100 text-dark pointer" data-bs-toggle="modal" data-bs-target="#modalAcademic" role="button" tabindex="0" onkeypress="if(event.key==='Enter') document.querySelector('#modalAcademic').click()">
+        <div class="card-body text-center">
+          <i class="bi bi-mortarboard" style="font-size: 2.5rem;"></i>
+          <h5 class="card-title mt-2">Academic Programs</h5>
+          <p class="card-text">Structured learning in core subjects like math, science, and languages.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card h-100 text-dark pointer" data-bs-toggle="modal" data-bs-target="#modalSkill" role="button" tabindex="0" onkeypress="if(event.key==='Enter') document.querySelector('#modalSkill').click()">
+        <div class="card-body text-center">
+          <i class="bi bi-tools" style="font-size: 2.5rem;"></i>
+          <h5 class="card-title mt-2">Skill Development</h5>
+          <p class="card-text">Practical skills, coding, arts, and vocational training.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card h-100 text-dark pointer" data-bs-toggle="modal" data-bs-target="#modalCommunity" role="button" tabindex="0" onkeypress="if(event.key==='Enter') document.querySelector('#modalCommunity').click()">
+        <div class="card-body text-center">
+          <i class="bi bi-people" style="font-size: 2.5rem;"></i>
+          <h5 class="card-title mt-2">Community & Social Programs</h5>
+          <p class="card-text">Volunteering, social work, and community service initiatives.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card h-100 text-dark pointer" data-bs-toggle="modal" data-bs-target="#modalOnline" role="button" tabindex="0" onkeypress="if(event.key==='Enter') document.querySelector('#modalOnline').click()">
+        <div class="card-body text-center">
+          <i class="bi bi-laptop" style="font-size: 2.5rem;"></i>
+          <h5 class="card-title mt-2">Online Learning</h5>
+          <p class="card-text">Self-paced online courses with quizzes and certificates.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card h-100 text-dark pointer" data-bs-toggle="modal" data-bs-target="#modalSpecial" role="button" tabindex="0" onkeypress="if(event.key==='Enter') document.querySelector('#modalSpecial').click()">
+        <div class="card-body text-center">
+          <i class="bi bi-star" style="font-size: 2.5rem;"></i>
+          <h5 class="card-title mt-2">Special Interest</h5>
+          <p class="card-text">Creative, hobby, and niche courses like music, photography, or debate.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card h-100 text-dark pointer" data-bs-toggle="modal" data-bs-target="#modalFundraising" role="button" tabindex="0" onkeypress="if(event.key==='Enter') document.querySelector('#modalFundraising').click()">
+        <div class="card-body text-center">
+          <i class="bi bi-hand-thumbs-up" style="font-size: 2.5rem;"></i>
+          <h5 class="card-title mt-2">Fundraising & Engagement</h5>
+          <p class="card-text">Support initiatives, donations, and awareness campaigns.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Modals -->
+<div class="modal fade" id="modalAcademic" tabindex="-1" aria-labelledby="modalAcademicTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalAcademicTitle">Academic Programs</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>These programs provide structured learning in math, science, languages, and more, designed to build strong academic foundations.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalSkill" tabindex="-1" aria-labelledby="modalSkillTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalSkillTitle">Skill Development</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Hands-on training in coding, arts, vocational skills, and professional development.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalCommunity" tabindex="-1" aria-labelledby="modalCommunityTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalCommunityTitle">Community & Social Programs</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Volunteer opportunities, social initiatives, and community service programs to make a difference.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalOnline" tabindex="-1" aria-labelledby="modalOnlineTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalOnlineTitle">Online Learning</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Self-paced courses online with videos, quizzes, and certificates to track progress from anywhere.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalSpecial" tabindex="-1" aria-labelledby="modalSpecialTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalSpecialTitle">Special Interest Programs</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Creative and hobby courses like music, photography, debate, and other niche interests.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalFundraising" tabindex="-1" aria-labelledby="modalFundraisingTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalFundraisingTitle">Fundraising & Engagement</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Programs for donors and supporters, including fundraising campaigns, awareness, and volunteer engagement.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section id="donate" class="section backdrop">
+  <h2>Donate</h2>
+  <p class="small-muted">Choose a target to support the overall fund or a specific student. Progress bars show transparency.</p>
+  <div class="row g-3">
+    <div class="col-lg-6">
+      <div class="p-3 bg-dark bg-opacity-50 rounded">
+        
+        <div class="mb-3">
+          <label for="donorName" class="form-label">Your Name</label>
+          <input type="text" id="donorName" class="form-control" placeholder="Enter your name" required />
+        </div>
+
+        <div class="mb-3">
+          <label for="amount" class="form-label">Amount (₹)</label>
+          <input type="number" id="amount" class="form-control" placeholder="e.g., 500" min="1" required />
+        </div>
+
+        <div class="mb-3">
+          <label for="donationTarget" class="form-label">Target</label>
+          <select id="donationTarget" class="form-select">
+            <option value="general">General Fund (helps all students)</option>
+            <option value="student1">Student: Alice</option>
+            <option value="student2">Student: Bob</option>
+            <option value="student3">Student: Charlie</option>
+          </select>
+        </div>
+
+        <button class="btn btn-success w-100" onclick="processDonation()">Donate Now</button>
+        <div id="donationMessage" class="mt-2"></div>
+      </div>
+    </div>
+
+    <div class="col-lg-6">
+      <h5>Transparency Dashboard</h5>
+
+      <div class="mb-1">General Fund</div>
+      <div class="progress mb-3">
+        <div id="generalProgress" class="progress-bar" style="width:0%" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">₹0 / ₹100000</div>
+      </div>
+
+      <div class="mb-1">Alice</div>
+      <div class="progress mb-2">
+        <div id="student1Progress" class="progress-bar bg-info" style="width:0%" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">₹0 / ₹20000 | 0%</div>
+      </div>
+
+      <div class="mb-1">Bob</div>
+      <div class="progress mb-2">
+        <div id="student2Progress" class="progress-bar bg-warning" style="width:0%" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">₹0 / ₹15000 | 0%</div>
+      </div>
+
+      <div class="mb-1">Charlie</div>
+      <div class="progress">
+        <div id="student3Progress" class="progress-bar bg-danger" style="width:0%" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">₹0 / ₹10000 | 0%</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <h5>Recent Donors</h5>
+    <ul id="donorList" class="list-group"></ul>
+  </div>
+</section>
+
+<section id="volunteer" class="section backdrop">
+  <h2>Volunteer with Us</h2>
+  <div class="row g-3">
+    <div class="col-lg-6">
+      <div class="p-3 bg-dark bg-opacity-50 rounded h-100">
+        <h5>Apply as Volunteer</h5>
+        <form onsubmit="applyVolunteer(event)">
+          <div class="mb-2">
+            <label for="volName" class="form-label sr-only">Full Name</label>
+            <input id="volName" class="form-control" placeholder="Full Name" required>
+          </div>
+          <div class="mb-2">
+            <label for="volEmail" class="form-label sr-only">Email</label>
+            <input id="volEmail" type="email" class="form-control" placeholder="Email" required>
+          </div>
+          <div class="mb-2">
+            <label for="volSkills" class="form-label sr-only">Skills</label>
+            <input id="volSkills" class="form-control" placeholder="Skills (e.g., Math, Python, Mentorship)">
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Submit Application</button>
+        </form>
+        <div id="volMsg" class="mt-2"></div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="p-3 bg-dark bg-opacity-50 rounded h-100">
+        <h5>Student Enrollment</h5>
+        <ol class="small-muted mb-3">
+          <li>Fill the enrollment form below</li>
+          <li>Pick learning tracks (Math, Science, English, Computer)</li>
+          <li>Start watching videos and attempt quizzes</li>
+          <li>Track progress in the Dashboard and download certificates</li>
+        </ol>
+        <form onsubmit="enrollStudent(event)">
+          <div class="mb-2">
+            <label for="enrName" class="form-label sr-only">Student Name</label>
+            <input id="enrName" class="form-control" placeholder="Student Name" required>
+          </div>
+          <div class="mb-2">
+            <label for="enrEmail" class="form-label sr-only">Email</label>
+            <input id="enrEmail" type="email" class="form-control" placeholder="Email" required>
+          </div>
+          <div class="mb-2">
+            <label for="enrTrack" class="form-label sr-only">Learning Track</label>
+            <select id="enrTrack" class="form-select" required>
+              <option value="">Select Learning Track</option>
+              <option value="Math">Math</option>
+              <option value="Science">Science</option>
+              <option value="English">English</option>
+              <option value="Computer">Computer</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-warning w-100">Enroll Student</button>
+        </form>
+        <div id="enrMsg" class="mt-2"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="education" class="section backdrop">
+  <h2>Educational Resources</h2>
+  <div class="row g-3">
+    <div class="col-lg-4">
+      <label for="topicSelect" class="form-label">Topic</label>
+      <select id="topicSelect" class="form-select" onchange="loadTopic()">
+        <option value="math">Math</option>
+        <option value="science">Science</option>
+        <option value="english">English</option>
+        <option value="computer">Computer</option>
+      </select>
+    </div>
+    <div class="col-lg-4" id="subTopicCol" style="display:none;">
+      <label for="subTopicSelect" class="form-label">Computer Subtopic</label>
+      <select id="subTopicSelect" class="form-select" onchange="loadSubTopic()"></select>
+    </div>
+  </div>
+
+  <div class="quiz-generator mt-4">
+    <h5>Generate a new quiz ✨</h5>
+    <p class="small-muted">Enter any topic to get a new quiz created instantly. (e.g., "Solar System", "Ancient Rome", "Algebra")</p>
+    <form onsubmit="generateQuizWithAI(event)">
+      <div class="input-group">
+        <label for="customTopic" class="sr-only">Custom quiz topic</label>
+        <input id="customTopic" type="text" class="form-control" placeholder="Enter custom quiz topic..." required>
+        <button type="submit" class="btn btn-primary">Generate Quiz</button>
+      </div>
+    </form>
+    <div id="quizLoader" class="mt-2 d-none">
+      <div class="loading-spinner"></div>
+      <span class="ms-2">Generating quiz...</span>
+    </div>
+    <div id="aiQuizError" class="mt-2"></div>
+  </div>
+
+
+
+  <div class="row g-3 mt-1">
+    <div class="col-lg-7">
+      <div class="ratio ratio-16x9">
+        <iframe id="topicVideo" src="" allowfullscreen title="Educational video"></iframe>
+      </div>
+    </div>
+    <div class="col-lg-5">
+      <div class="p-3 bg-dark bg-opacity-50 rounded h-100">
+        <h5 id="topicTitle" class="mb-2">Topic</h5>
+        <p id="topicDescription" class="small-muted mb-0">Description</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-container mt-4">
+  <h5 class="quiz-title">Quick Quiz 🌟</h5>
+
+  <div id="quiz" class="quiz-questions" role="region" aria-label="Quiz questions">
+    <!-- Quiz questions with radio buttons will be dynamically injected here -->
+  </div>
+
+  <button class="btn submit-btn mt-3" id="submitQuizBtn" disabled onclick="submitQuiz()">Submit Answers</button>
+
+  <div id="quizResult" class="quiz-result mt-3 fw-bold" role="status" aria-live="polite"></div>
+  </div>
+
+
+  <div class="mt-4">
+    <h5>Get your Certificate</h5>
+    <form onsubmit="generateCertificate(event)">
+      <div class="row g-2">
+        <div class="col-md-3">
+          <label for="studentNameCert" class="form-label sr-only">Your Name</label>
+          <input id="studentNameCert" class="form-control" placeholder="Your Name" required />
+        </div>
+        <div class="col-md-3">
+          <label for="courseNameCert" class="form-label sr-only">Course / Topic</label>
+          <input id="courseNameCert" class="form-control" placeholder="Course / Topic" required />
+        </div>
+        <div class="col-md-3">
+          <label for="studentIdInput" class="form-label sr-only">Student ID</label>
+          <input id="studentIdInput" class="form-control" placeholder="Student ID"/>
+        </div>
+        <div class="col-md-2">
+          <button type="submit" class="btn btn-warning w-100">Generate PDF Certificate</button>
+        </div>
+        <div id="certError"></div>
+      </div>
+    </form>
+  </div>
+</section>
+
+<section id="dashboard" class="section backdrop">
+  <h2>Student Dashboard</h2>
+  <p class="small-muted">Auto-updates when quizzes are submitted or donations for students are received.</p>
+  <div class="table-responsive">
+    <table class="table table-dark table-striped table-dark-glass align-middle">
+      <thead>
+        <tr>
+          <th scope="col">Student</th>
+          <th scope="col">Progress</th>
+          <th scope="col">Last Quiz Score</th>
+          <th scope="col">Donations Received (₹)</th>
+        </tr>
+      </thead>
+      <tbody id="dashboardBody"></tbody>
+    </table>
+  </div>
+  
+  <h2 class="mt-5">Donation Dashboard</h2>
+  <p class="small-muted">See how your contributions make an impact.</p>
+
+  <div class="mb-4">
+    <h5>Total Donations: <span id="totalDonation">₹0</span> / Goal: ₹<span id="donationGoal">100000</span></h5>
+    <div class="progress" style="height: 25px;">
+      <div id="donationProgress" class="progress-bar bg-success" role="progressbar" style="width:0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+    </div>
+  </div>
+
+  <div class="mb-4">
+    <h5>Fund Allocation</h5>
+    <canvas id="fundChart" width="400" height="200" style="display:none;" aria-label="Fund allocation chart"></canvas>
+    <div id="noDonationsMessage" class="text-center">No donations yet! Make a donation to see the allocation chart.</div>
+  </div>
+
+  <div>
+    <h5>Recent Donations</h5>
+    <ul id="recentDonationsList" class="list-group"></ul>
+  </div>
+</section>
+
+<section id="leaderboard" class="section backdrop">
+  <h2 class="text-center mb-4">Leaderboard</h2>
+  <div class="row">
+    <div class="col-md-6">
+      <h4 class="text-center">🏆 Top Donors</h4>
+      <ul id="donorLeaderboard" class="list-group"></ul>
+    </div>
+    <div class="col-md-6">
+      <h4 class="text-center">🤝 Top Volunteers</h4>
+      <ul id="volunteerLeaderboard" class="list-group"></ul>
+    </div>
+  </div>
+</section>
+
+<section id="stories" class="section backdrop">
+  <h2>Success Stories</h2>
+  <p class="small-muted">Pass-out and successful students share their experiences.</p>
+  <div class="row g-3">
+    <div class="col-lg-5">
+      <div class="p-3 bg-dark bg-opacity-50 rounded h-100">
+        <h5>Share Your Story</h5>
+        <form onsubmit="addStory(event)">
+          <div class="mb-2">
+            <label for="storyName" class="form-label sr-only">Your Name</label>
+            <input id="storyName" class="form-control" placeholder="Your Name" required>
+          </div>
+          <div class="mb-2">
+            <label for="storyTitle" class="form-label sr-only">Story Title</label>
+            <input id="storyTitle" class="form-control" placeholder="Story Title" required>
+          </div>
+          <div class="mb-2">
+            <label for="storyText" class="form-label sr-only">Your journey</label>
+            <textarea id="storyText" class="form-control" rows="5" placeholder="Your journey..." required></textarea>
+          </div>
+          <button type="submit" class="btn btn-success w-100">Publish Story</button>
+        </form>
+        <div id="storyMsg" class="mt-2"></div>
+      </div>
+    </div>
+    <div class="col-lg-7">
+      <div id="storiesList" class="d-grid gap-3" role="region" aria-label="Success stories"></div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="section backdrop">
+  <h2>Contact Us</h2>
+  <p class="small-muted">Email: info@hopesprouts.org • Phone: +91 98765 43210 • Address: 123 Hope Street, Pune, India</p>
+  <div class="row g-3">
+    <div class="col-md-6">
+      <div class="p-3 bg-dark bg-opacity-50 rounded">
+        <h5>General Enquiry</h5>
+        <form onsubmit="sendContact(event)">
+          <div class="mb-2">
+            <label for="conName" class="form-label sr-only">Name</label>
+            <input id="conName" class="form-control" placeholder="Name" required>
+          </div>
+          <div class="mb-2">
+            <label for="conEmail" class="form-label sr-only">Email</label>
+            <input id="conEmail" type="email" class="form-control" placeholder="Email" required>
+          </div>
+          <div class="mb-2">
+            <label for="conMsg" class="form-label sr-only">Message</label>
+            <textarea id="conMsg" class="form-control" rows="4" placeholder="Message" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-outline-light w-100">Send</button>
+        </form>
+        <div id="conAck" class="mt-2"></div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="p-3 bg-dark bg-opacity-50 rounded">
+        <h5>Follow & Support</h5>
+        <ul class="mb-0">
+          <li>Instagram: @hopesprouts</li>
+          <li>Twitter/X: @hopesprouts</li>
+          <li>LinkedIn: HopeSprouts Foundation</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<button id="backToTop" onclick="window.scrollTo({top:0, behavior:'smooth'})" aria-label="Back to top">↑</button>
+
+<!-- Error Modal -->
+<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-header">
+        <h5 class="modal-title" id="errorModalTitle">Error</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="errorModalBody"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* -------------------- UTILITY DATA & FUNCTIONS -------------------- */
+let donations = [];
+let donationsByDonor = {};
+let totals = { general: 0 };
+let goals = { general: 100000 };
+let students = {
+  student1: { name: 'Alice', progress: 0, lastScore: '-', donationsReceived: 0, quizAttempts: 0, quizCorrect: 0, target: 20000 },
+  student2: { name: 'Bob', progress: 0, lastScore: '-', donationsReceived: 0, quizAttempts: 0, quizCorrect: 0, target: 15000 },
+  student3: { name: 'Charlie', progress: 0, lastScore: '-', donationsReceived: 0, quizAttempts: 0, quizCorrect: 0, target: 10000 }
+};
+let stories = [];
+let volunteers = [];
+let userQuizProgress = { lastScore: '-', correct: 0, total: 0 };
+
+function persist() {
+  localStorage.setItem('hopesproutsData', JSON.stringify({
+    donations, donationsByDonor, totals, students, stories, volunteers, userQuizProgress
+  }));
+}
+
+function load() {
+  const savedData = localStorage.getItem('hopesproutsData');
+  if (savedData) {
+    const data = JSON.parse(savedData);
+    donations = data.donations || [];
+    donationsByDonor = data.donationsByDonor || {};
+    totals = data.totals || { general: 0 };
+    students = data.students || students;
+    stories = data.stories || [];
+    volunteers = data.volunteers || [];
+    userQuizProgress = data.userQuizProgress || { lastScore: '-', correct: 0, total: 0 };
+
+    // Update students object with new keys if they don't exist
+    for (const key in students) {
+      if (!students[key].donationsReceived) students[key].donationsReceived = 0;
+      if (!students[key].quizAttempts) students[key].quizAttempts = 0;
+      if (!students[key].quizCorrect) students[key].quizCorrect = 0;
+    }
+  }
+}
+
+function showMessage(elementId, message, type = 'info') {
+  const element = document.getElementById(elementId);
+  if (element) {
+    const className = type === 'error' ? 'error-message' : 'success-message';
+    element.innerHTML = `<div class="${className}">${message}</div>`;
+    setTimeout(() => element.innerHTML = '', 5000);
+  }
+}
+
+function validateForm(fields) {
+    console.log("Placeholder: validateForm called.");
+    return true; 
+  for (const field of fields) {
+    const element = document.getElementById(field.id);
+    if (!element) continue;
+
+    const value = element.value.trim();
+    if (field.required && !value) {
+      showMessage(field.messageId, `${field.name} is required.`, 'error');
+      element.focus();
+      return false;
+    }
+
+    if (field.type === 'email' && value && !isValidEmail(value)) {
+      showMessage(field.messageId, 'Please enter a valid email address.', 'error');
+      element.focus();
+      return false;
+    }
+
+    if (field.type === 'number' && value && (isNaN(value) || parseInt(value) < 1)) {
+      showMessage(field.messageId, `${field.name} must be a positive number.`, 'error');
+      element.focus();
+      return false;
+    }
+  }
+  return true;
+}
+
+function isValidEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
+function sanitizeInput(input) {
+  const temp = document.createElement('div');
+  temp.textContent = input;
+  return temp.innerHTML;
+}
+function updateProgressBars(totals, studentsArray) {
+    console.log('updateProgressBars: Placeholder running. Totals:', totals, 'Students Array Length:', studentsArray.length);
+    // This is where you will add code to update your progress bars.
+    // This function receives an ARRAY of student objects.
+}
+
+/** The main function to refresh the dashboard view. */
+function updateDashboard() {
+    console.log('updateDashboard: Placeholder running. Triggering data load.');
+    // When the dashboard section is shown, we load the data.
+    loadDashboardData(); 
+}
+
+function updateLeaderboards() {
+    console.log('updateLeaderboards: Placeholder running.');
+}
+
+function loadStories() {
+    console.log('loadStories: Placeholder running.');
+}
+
+// Global data structures for featured students (for the donation form target)
+const studentIdMap = {
+    student1: 1,
+    student2: 2,
+    student3: 3
+};
+const studentKeyMap = {};
+for (const key in studentIdMap) {
+    studentKeyMap[studentIdMap[key]] = key;
+}
+
+/* ====================================================================
+   NAV + UI CONTROLS 
+   ==================================================================== */
+
+function showSection(id) {
+    try {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.navbar .nav-link').forEach(n => n.classList.remove('active'));
+
+        const el = document.getElementById(id);
+        const link = document.querySelector(`.nav-link[onclick*="${id}"]`);
+
+        if (el) {
+            el.classList.add('active');
+        }
+        if (link) {
+            link.classList.add('active');
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        if (id === 'dashboard' && typeof updateDashboard === 'function') {
+            updateDashboard(); 
+        } else if (id === 'leaderboard' && typeof updateLeaderboards === 'function') {
+            updateLeaderboards(); 
+        } else if (id === 'stories' && typeof loadStories === 'function') {
+            loadStories(); 
+        }
+    } catch (error) {
+        console.error('Error showing section:', error);
+    }
+}
+
+window.addEventListener('scroll', () => {
+    const backToTop = document.getElementById('backToTop');
+    if (backToTop) {
+        if (window.scrollY > 300) {
+            backToTop.style.display = 'block';
+        } else {
+            backToTop.style.display = 'none';
+        }
+    }
+});
+
+
+/* ====================================================================
+   DONATE CORE LOGIC (Final Fixed Version)
+   ==================================================================== */
+
+/**
+ * Processes the donation form submission and calls the backend API.
+ */
+async function processDonation(event) {
+    if (event) event.preventDefault();
+
+    const donorNameInput = document.getElementById('donorName');
+    const amountInput = document.getElementById('amount');
+    const targetSelect = document.getElementById('donationTarget');
+
+    const fields = [
+        { id: 'donorName', name: 'Your name', required: true, messageId: 'donationMessage' },
+        { id: 'amount', name: 'Amount', required: true, type: 'number', messageId: 'donationMessage' }
+    ];
+
+    if (!validateForm(fields)) return;
+
+    const name = sanitizeInput(donorNameInput.value.trim() || 'Anonymous');
+    const amount = parseInt(amountInput.value);
+    const targetKey = targetSelect.value;
+    let targetValue = targetKey;
+    if (targetKey !== 'general') {
+        targetValue = studentIdMap[targetKey]; 
+    }
+
+    try {
+        const response = await fetch('http://127.0.0.1:5000/api/process_donation', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ donor_name: name, amount: amount, target: targetValue })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || `Server error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        showMessage('donationMessage', 'Thank you for your generous donation!', 'success');
+        
+        donorNameInput.value = '';
+        amountInput.value = '';
+
+        loadDashboardData();
+
+        setTimeout(() => {
+            showInvoice({
+                name: name,
+                amount: amount,
+                target: targetKey,
+                invoice_id: data.invoice_id
+            });
+        }, 2000);
+
+    } catch (error) {
+        console.error('Error processing donation:', error);
+        showMessage('donationMessage', `Error processing donation: ${error.message}. Please try again later.`, 'error');
+    }
+}
+
+/**
+ * Fetches all dashboard data, maps the students, and calls UI updates.
+ */
+async function loadDashboardData() {
+    try {
+        console.log('Attempting to fetch dashboard data...');
+        const response = await fetch('http://127.0.0.1:5000/api/dashboard_data');
+        
+        if (!response.ok) {
+            throw new Error(`Server error: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        const recentDonations = data.recent_donations || [];
+        const studentsArray = data.students || [];
+
+        // Convert the students Array into a Map/Object (needed for easy donor list lookup)
+        const studentsMap = {};
+        if (Array.isArray(studentsArray)) {
+             studentsArray.forEach(student => {
+                 const studentId = student.id; 
+                 studentsMap[studentId] = student;
+             });
+        }
+        
+        // --- Call functions with the correctly formatted data ---
+        
+        if (typeof updateProgressBars === 'function') {
+             const totals = data.general_fund ? { general: data.general_fund } : data.totals;
+             
+             // CRITICAL FIX for the "without an array" warning: 
+             // Convert the Map/Object back to an Array before calling updateProgressBars
+             const studentsArrayForProgressBars = Object.values(studentsMap);
+             
+             updateProgressBars(totals, studentsArrayForProgressBars);
+        }
+
+        // updateDonorList uses the efficient Map/Object format
+        updateDonorList(recentDonations, studentsMap);
+
+    } catch (error) {
+        console.error('CRITICAL ERROR fetching dashboard data:', error);
+        // This fallback stops the "flickering" if an API error occurs
+        updateDonorList([], {}); 
+    }
+}
+
+/**
+ * Updates the 'Recent Donors' list.
+ */
+function updateDonorList(donations, students) {
+    const donorList = document.getElementById('donorList');
+    if (!donorList) return;
+
+    donorList.innerHTML = ''; 
+
+    if (!donations || donations.length === 0) {
+        donorList.innerHTML = '<li class="list-group-item text-muted">No donations yet</li>';
+        return;
+    }
+
+    donations.slice(0, 5).forEach(donor => {
+        const li = document.createElement('li');
+        li.className = 'list-group-item d-flex justify-content-between align-items-center';
+
+        let targetName = 'Unknown Target';
+
+        if (donor.target === 'general') {
+            targetName = 'General Fund';
+        } else {
+            // Lookup student name using the numeric donor.target against the studentsMap
+            const studentInfo = students[donor.target]; 
+            
+            if (studentInfo && studentInfo.name) {
+                targetName = studentInfo.name;
+            } else {
+                targetName = `Student ID: ${donor.target}`;
+            }
+        }
+        
+        li.innerHTML = `
+            <span><strong>${donor.name}</strong> donated to 
+                ${targetName}
+            </span>
+            <span class="badge bg-success">₹${donor.amount}</span>
+        `;
+        donorList.appendChild(li);
+    });
+}
+
+
+/**
+ * Shows a full-page styled invoice after a successful donation.
+ */
+function showInvoice(donationDetails) {
+    document.body.innerHTML = `
+        <div style="background:#f5f5f5; min-height:100vh; display:flex; justify-content:center; align-items:center; font-family:Arial, sans-serif; padding:20px;">
+            <div style="background:white; color:black; width:600px; max-width:90%; padding:40px; border:2px solid #000; border-radius:10px; text-align:center; box-shadow:0 0 15px rgba(0,0,0,0.1);">
+                
+                <h1 style="font-size:26px; margin-bottom:10px;">Donation Invoice</h1>
+                <p style="font-size:14px; color:#555; margin-bottom:20px;">Thank you for your support! Below are your donation details:</p>
+                
+                <div style="text-align:left; margin:20px 0; font-size:16px; line-height:1.6;">
+                    <p><strong>Invoice ID:</strong> ${donationDetails.invoice_id || 'N/A'}</p>
+                    <p><strong>Donor Name:</strong> ${donationDetails.name}</p>
+                    <p><strong>Donation Amount:</strong> ₹${donationDetails.amount}</p>
+                    <p><strong>Target:</strong> ${donationDetails.target === 'general' ? 'General Fund' : donationDetails.target}</p>
+                    <p><strong>Date:</strong> ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}</p>
+                </div>
+
+                <hr style="margin:20px 0;">
+
+                <div style="font-size:14px; color:#444; text-align:left; margin-bottom:20px;">
+                    <p><strong>Organization:</strong> HopeSprouts Foundation</p>
+                    <p><strong>Email:</strong> support@hopesprouts.org</p>
+                    <p><strong>Contact:</strong> +91-9876543210</p>
+                </div>
+
+                <div style="margin-top:30px;">
+                    <button onclick="window.print()" 
+                        style="background:#000; color:white; padding:10px 20px; margin-right:10px; border:none; border-radius:5px; cursor:pointer;">
+                        Print Invoice
+                    </button>
+                    <button onclick="window.location.reload()" 
+                        style="background:#444; color:white; padding:10px 20px; border:none; border-radius:5px; cursor:pointer;">
+                        Back to Home
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+
+/* -------------------- VOLUNTEER -------------------- */
+function applyVolunteer(event) {
+  if (event) event.preventDefault();
+
+  const volNameInput = document.getElementById('volName');
+  const volEmailInput = document.getElementById('volEmail');
+  const volSkillsInput = document.getElementById('volSkills');
+
+  const fields = [
+    { id: 'volName', name: 'Full Name', required: true, messageId: 'volMsg' },
+    { id: 'volEmail', name: 'Email', required: true, type: 'email', messageId: 'volMsg' }
+  ];
+
+  if (!validateForm(fields)) return;
+
+  const name = sanitizeInput(volNameInput.value.trim());
+  const email = sanitizeInput(volEmailInput.value.trim());
+  const skills = sanitizeInput(volSkillsInput.value.trim());
+
+  fetch('http://127.0.0.1:5000/api/apply_volunteer', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ name, email, skills })
+  })
+  .then(response => {
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  .then(data => {
+    console.log('Success:', data);
+    showMessage('volMsg', data.message, 'success');
+
+    // Clear form fields
+    volNameInput.value = '';
+    volEmailInput.value = '';
+    volSkillsInput.value = '';
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    showMessage('volMsg', 'Error submitting application. Please try again.', 'error');
+  });
+}
+
+function enrollStudent(event) {
+  if (event) event.preventDefault();
+
+  const enrNameInput = document.getElementById('enrName');
+  const enrEmailInput = document.getElementById('enrEmail');
+  const enrTrackSelect = document.getElementById('enrTrack');
+
+  const fields = [
+    { id: 'enrName', name: 'Student Name', required: true, messageId: 'enrMsg' },
+    { id: 'enrEmail', name: 'Email', required: true, type: 'email', messageId: 'enrMsg' },
+    { id: 'enrTrack', name: 'Learning Track', required: true, messageId: 'enrMsg' }
+  ];
+
+  if (!validateForm(fields)) return;
+
+  const name = sanitizeInput(enrNameInput.value.trim());
+  const email = sanitizeInput(enrEmailInput.value.trim());
+  const track = sanitizeInput(enrTrackSelect.value);
+
+  fetch('http://127.0.0.1:5000/api/enroll_student', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ name, email, track })
+  })
+  .then(response => {
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  .then(data => {
+    console.log('Success:', data);
+    showMessage('enrMsg', data.message, 'success');
+
+    // Clear form fields
+    enrNameInput.value = '';
+    enrEmailInput.value = '';
+    enrTrackSelect.value = '';
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    showMessage('enrMsg', 'Error enrolling student. Please try again.', 'error');
+  });
+}
+
+/* -------------------- EDUCATION (VIDEOS + QUIZ) -------------------- */
+const topics = {
+  math: {
+    title: 'Mathematics Basics',
+    video: 'https://www.youtube.com/embed/1Y1q5c7pMms',
+    description: 'Fundamental arithmetic and problem solving.',
+    quiz: [
+      { question: '2 + 3 = ?', options: ['4', '5', '6', '7'], answer: '5' },
+      { question: '10 ÷ 2 = ?', options: ['2', '4', '5', '20'], answer: '5' },
+      { question: 'Square of 6?', options: ['12', '18', '36', '30'], answer: '36' },
+      { question: '9 × 3 = ?', options: ['18', '21', '27', '36'], answer: '27' },
+      { question: '15 − 7 = ?', options: ['6', '7', '8', '9'], answer: '8' }
+    ]
+  },
+  science: {
+    title: 'Science Fundamentals',
+    video: 'https://www.youtube.com/embed/d3W4c6_Y4rA',
+    description: 'An introduction to basic scientific principles.',
+    quiz: [
+      { question: 'What is H₂O?', options: ['Hydrogen', 'Oxygen', 'Water', 'Fire'], answer: 'Water' },
+      { question: 'What planet is known as the Red Planet?', options: ['Earth', 'Mars', 'Jupiter', 'Venus'], answer: 'Mars' },
+      { question: 'What is the center of an atom?', options: ['Electron', 'Proton', 'Nucleus', 'Neutron'], answer: 'Nucleus' },
+      { question: 'What force keeps us on the ground?', options: ['Magnetism', 'Friction', 'Gravity', 'Static'], answer: 'Gravity' },
+      { question: 'What is the boiling point of water?', options: ['50°C', '100°C', '150°C', '200°C'], answer: '100°C' }
+    ]
+  },
+  english: {
+    title: 'English Skills',
+    video: 'https://www.youtube.com/embed/ox3PQG-l6Ao',
+    description: 'Grammar, vocabulary and usage.',
+    quiz: [
+      { question: 'Plural of "mouse"?', options: ['mouses', 'mice', 'mous', 'mouse'], answer: 'mice' },
+      { question: 'Opposite of "hot"?', options: ['warm', 'cold', 'cool', 'heat'], answer: 'cold' },
+      { question: 'Synonym of "happy"?', options: ['sad', 'joyful', 'angry', 'tired'], answer: 'joyful' },
+      { question: 'Article before "apple"?', options: ['a', 'an', 'the', 'none'], answer: 'an' },
+      { question: 'Past tense of "go"?', options: ['goed', 'went', 'gone', 'go'], answer: 'went' }
+    ]
+  },
+  computer: {
+    title: 'Computer Science',
+    description: 'Choose a subtopic to begin.',
+    subTopics: {
+      html: {
+        title: 'HTML',
+        video: 'https://www.youtube.com/embed/k_y3_y8PjH4',
+        quiz: [
+          { question: 'What does HTML stand for?', options: ['Hyperlinks and Text Markup Language', 'Hyper Text Markup Language', 'Home Tool Markup Language', 'Hyper Type Markup Language'], answer: 'Hyper Text Markup Language' },
+          { question: 'What tag creates a paragraph?', options: ['<p>', '<para>', '<pa>', '<pg>'], answer: '<p>' }
+        ]
+      },
+      css: {
+        title: 'CSS',
+        video: 'https://www.youtube.com/embed/yfoY53QXEnI',
+        quiz: [
+          { question: 'CSS stands for…', options: ['Creative Style Sheets', 'Cascading Style Sheets', 'Colorful Style Set', 'Computer Style Sheets'], answer: 'Cascading Style Sheets' },
+          { question: 'Text color property?', options: ['font-color', 'color', 'text-color', 'fgcolor'], answer: 'color' },
+          { question: 'Select id="title"', options: ['.title', '#title', 'title', 'id:title'], answer: '#title' },
+          { question: 'Make text bold?', options: ['font-weight', 'bold', 'font-bold', 'weight'], answer: 'font-weight' }
+        ]
+      },
+      python: {
+        title: 'Python',
+        video: 'https://www.youtube.com/embed/rfscVS0vtbw',
+        quiz: [
+          { question: 'Function keyword in Python?', options: ['func', 'def', 'function', 'define'], answer: 'def' },
+          { question: 'List literal is…', options: ['()', '{}', '[]', '<>'], answer: '[]' },
+          { question: 'Single-line comment?', options: ['//', '#', '', '--'], answer: '#'},
+          { question: 'Print text?', options: ['echo()', 'print()', 'log()', 'console()'], answer: 'print()'},
+          { question: 'Loop keyword?', options: ['foreach', 'repeat', 'for', 'loop'], answer: 'for'}
+        ]
+      },
+      php: {
+        title: 'PHP',
+        video: 'https://www.youtube.com/embed/OK_JCtrrv-c',
+        quiz: [
+          { question: 'How do you start a PHP block?', options: ['<php>', '<?php', '<?>', '<!php>'], answer: '<?php' },
+          { question: 'How to print text in PHP?', options: ['console.log', 'print', 'echo', 'log'], answer: 'echo' }
+        ]
+      },
+      javascript: {
+        title: 'JavaScript',
+        video: 'https://www.youtube.com/embed/W6NZfCO5ucI',
+        quiz: [
+          { question: 'What keyword declares a variable?', options: ['var', 'let', 'const', 'all of the above'], answer: 'all of the above' },
+          { question: 'How to add a comment?', options: ['//', '', '--', '**'], answer: '//' }
+        ]
+      },
+      nodejs: {
+        title: 'Node.js',
+        video: 'https://www.youtube.com/embed/TlB_eWDSMxU',
+        quiz: [
+          { question: 'What is Node.js?', options: ['A framework', 'A library', 'A JavaScript runtime environment', 'A database'], answer: 'A JavaScript runtime environment' },
+          { question: 'What command initializes a project?', options: ['npm install', 'npm init', 'npm start', 'npm run'], answer: 'npm init' }
+        ]
+      },
+      ajax: {
+        title: 'AJAX',
+        video: 'https://www.youtube.com/embed/rJesacJ_Ftw',
+        quiz: [
+          { question: 'What does AJAX stand for?', options: ['Asynchronous JavaScript and XML', 'Advanced JSON and XML', 'Active JavaScript and XHR', 'Automated JavaScript and XML'], answer: 'Asynchronous JavaScript and XML' },
+          { question: 'What is the main object used in AJAX?', options: ['XMLHttpRequest', 'XMLParser', 'HTTPObject', 'AJAXRequest'], answer: 'XMLHttpRequest' }
+        ]
+      }
+    }
+  }
+};
+
+let currentTopic = '';
+let currentQuiz = [];
+
+function loadTopic() {
+  try {
+    const topicKey = document.getElementById('topicSelect').value;
+    const topic = topics[topicKey];
+
+    if (!topic) return;
+
+    const titleElement = document.getElementById('topicTitle');
+    const descElement = document.getElementById('topicDescription');
+    const videoElement = document.getElementById('topicVideo');
+    const subTopicCol = document.getElementById('subTopicCol');
+
+    if (titleElement) titleElement.textContent = topic.title;
+    if (descElement) descElement.textContent = topic.description;
+    if (videoElement) videoElement.src = topic.video || '';
+    if (subTopicCol) subTopicCol.style.display = (topic.subTopics) ? 'block' : 'none';
+
+    if (topic.subTopics) {
+      const subSelect = document.getElementById('subTopicSelect');
+      if (subSelect) {
+        subSelect.innerHTML = Object.keys(topic.subTopics)
+          .map(k => `<option value="${k}">${topic.subTopics[k].title}</option>`)
+          .join('');
+        loadSubTopic();
+      }
+    } else {
+      currentTopic = topicKey;
+      currentQuiz = topic.quiz || [];
+      renderQuiz();
+    }
+  } catch (error) {
+    console.error('Error loading topic:', error);
+  }
+}
+
+function loadSubTopic() {
+  try {
+    const subTopicKey = document.getElementById('subTopicSelect').value;
+    const topic = topics.computer.subTopics[subTopicKey];
+
+    if (!topic) return;
+
+    const titleElement = document.getElementById('topicTitle');
+    const descElement = document.getElementById('topicDescription');
+    const videoElement = document.getElementById('topicVideo');
+
+    if (titleElement) titleElement.textContent = topic.title;
+    if (descElement) descElement.textContent = '';
+    if (videoElement) videoElement.src = topic.video || '';
+
+    currentTopic = subTopicKey;
+    currentQuiz = topic.quiz || [];
+    renderQuiz();
+  } catch (error) {
+    console.error('Error loading subtopic:', error);
+  }
+}
+
+function renderQuiz() {
+  const quizDiv = document.getElementById('quiz');
+  const submitBtn = document.getElementById('submitQuizBtn');
+
+  if (!quizDiv) return;
+
+  if (!currentQuiz || currentQuiz.length === 0) {
+    quizDiv.innerHTML = '<p>No quiz available for this topic. Try generating one with AI!</p>';
+    if (submitBtn) submitBtn.disabled = true;
+    return;
+  }
+
+  try {
+    quizDiv.innerHTML = currentQuiz.map((q, i) => `
+      <div class="mb-3">
+        <p class="mb-1 fw-bold">Q${i+1}. ${sanitizeInput(q.question)}</p>
+        ${q.options.map((opt, j) => `
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="q${i}" id="q${i}o${j}" value="${sanitizeInput(opt)}" onchange="checkQuizCompletion()">
+            <label class="form-check-label" for="q${i}o${j}">${sanitizeInput(opt)}</label>
+          </div>
+        `).join('')}
+      </div>
+    `).join('');
+
+    if (submitBtn) submitBtn.disabled = false;
+    document.getElementById('quizResult').textContent = '';
+  } catch (error) {
+    console.error('Error rendering quiz:', error);
+    quizDiv.innerHTML = '<p class="error-message">Error loading quiz. Please try again.</p>';
+    if (submitBtn) submitBtn.disabled = true;
+  }
+}
+
+function checkQuizCompletion() {
+  const submitBtn = document.getElementById('submitQuizBtn');
+  if (!submitBtn || !currentQuiz || currentQuiz.length === 0) return;
+
+  let allAnswered = true;
+  for (let i = 0; i < currentQuiz.length; i++) {
+    const answered = document.querySelector(`input[name="q${i}"]:checked`);
+    if (!answered) {
+      allAnswered = false;
+      break;
+    }
+  }
+  submitBtn.disabled = !allAnswered;
+}
+
+function submitQuiz() {
+    if (!currentQuiz || currentQuiz.length === 0) return;
+
+    try {
+        let correctCount = 0;
+        const totalQuestions = currentQuiz.length;
+
+        // Visual feedback for quiz answers (keep this part)
+        currentQuiz.forEach((q, i) => {
+            const selected = document.querySelector(`input[name="q${i}"]:checked`);
+            if (selected && selected.value === q.answer) {
+                correctCount++;
+            }
+            // Add or remove .correct and .wrong classes for color feedback
+            const labels = document.querySelectorAll(`label[for^="q${i}o"]`);
+            labels.forEach(l => l.classList.remove('correct', 'incorrect'));
+            if (selected && selected.value === q.answer) {
+                document.querySelector(`label[for="${selected.id}"]`).classList.add('correct');
+            } else if (selected) {
+                document.querySelector(`label[for="${selected.id}"]`).classList.add('incorrect');
+                const correctLabel = [...labels].find(l => l.textContent.trim() === q.answer);
+                if (correctLabel) correctLabel.classList.add('correct');
+            }
+        });
+
+        // Get the student's ID from an input field
+        const studentId = document.getElementById('studentIdInput').value; 
+
+        if (!studentId) {
+            alert('Please enter your student ID to save your score.');
+            return;
+        }
+
+        const scoreData = {
+            student_id: studentId,
+            score: correctCount,
+            total_questions: totalQuestions
+        };
+
+        // Send the score to your backend's API
+        fetch('http://127.0.0.1:5000/api/submit_quiz', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(scoreData)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Success:', data);
+            document.getElementById('quizResult').textContent = `You scored ${correctCount}/${totalQuestions}!`;
+            updateDashboard(); // Update the dashboard with the new data
+        })
+        .catch(error => {
+            console.error('Error saving quiz score:', error);
+            document.getElementById('quizResult').textContent = 'Error saving your score. Please try again.';
+        });
+
+        const submitBtn = document.getElementById('submitQuizBtn');
+        if (submitBtn) submitBtn.disabled = true;
+
+    } catch (error) {
+        console.error('Error submitting quiz:', error);
+        document.getElementById('quizResult').textContent = 'Error submitting quiz. Please try again.';
+    }
+}
+
+const API_URL = 'http://127.0.0.1:5000/api';
+
+// This is a necessary helper function for generateCertificate()
+function showMessage(elementId, message, type) {
+    const el = document.getElementById(elementId);
+    if (el) {
+        el.textContent = message;
+        el.className = `mt-4 font-semibold ${type === 'error' ? 'text-red-600' : 'text-green-600'}`;
+    }
+}
+
+// This is a necessary helper function for generateCertificate()
+function sanitizeInput(input) {
+    const div = document.createElement('div');
+    div.textContent = input;
+    return div.innerHTML;
+}
+
+
+function generateCertificate(event) {
+    if (event) event.preventDefault();
+
+    const name = sanitizeInput(document.getElementById('studentNameCert').value.trim());
+    const course = sanitizeInput(document.getElementById('courseNameCert').value.trim());
+    const studentId = document.getElementById('studentIdInput').value;
+
+    if (!name || !course || !studentId) {
+        showMessage('certError', 'Please fill in all fields and provide your Student ID.', 'error');
+        return;
+    }
+
+    // Fetch the latest score from the database. We explicitly convert the ID to an integer.
+    fetch(`${API_URL}/student/${parseInt(studentId)}`)
+    .then(response => {
+        if (!response.ok) {
+            // If the response is not OK, we'll try to get the specific error message from the API.
+            return response.json().then(err => { throw new Error(err.error || 'Network response was not ok'); });
+        }
+        return response.json();
+    })
+    .then(studentData => {
+        const quizScore = studentData.last_quiz_score || 'Not Available';
+
+        try {
+            const { jsPDF } = window.jspdf;
+            if (!jsPDF) {
+                throw new Error('PDF library not loaded');
+            }
+
+            const doc = new jsPDF();
+            doc.setFillColor(255, 255, 255);
+            doc.rect(0, 0, doc.internal.pageSize.width, doc.internal.pageSize.height, 'F');
+            doc.setFontSize(40);
+            doc.setTextColor(33, 37, 41);
+            doc.text('Certificate of Completion', doc.internal.pageSize.width / 2, 50, { align: 'center' });
+            doc.setFontSize(20);
+            doc.text('This certifies that', doc.internal.pageSize.width / 2, 80, { align: 'center' });
+            doc.setFontSize(30);
+            doc.setTextColor(255, 193, 7);
+            doc.text(name, doc.internal.pageSize.width / 2, 100, { align: 'center' });
+            doc.setTextColor(33, 37, 41);
+            doc.setFontSize(20);
+            doc.text('has successfully completed the', doc.internal.pageSize.width / 2, 120, { align: 'center' });
+            doc.setFontSize(25);
+            doc.text(course, doc.internal.pageSize.width / 2, 140, { align: 'center' });
+
+            doc.setFontSize(16);
+            if (quizScore !== 'Not Available') {
+                doc.text(`Quiz Score: ${quizScore}`, doc.internal.pageSize.width / 2, 160, { align: 'center' });
+            } else {
+                doc.text('(Quiz score not available)', doc.internal.pageSize.width / 2, 160, { align: 'center' });
+            }
+
+            doc.setFontSize(12);
+            doc.text('On behalf of HopeSprouts NGO', doc.internal.pageSize.width / 2, 180, { align: 'center' });
+            doc.text(`Date: ${new Date().toLocaleDateString()}`, doc.internal.pageSize.width / 2, 190, { align: 'center' });
+
+            doc.save(`${name.replace(/\s/g, '_')}_Certificate.pdf`);
+
+            // Clear form fields
+            document.getElementById('studentNameCert').value = '';
+            document.getElementById('courseNameCert').value = '';
+
+        } catch (error) {
+            console.error('Error generating certificate:', error);
+            showMessage('certError', 'Error generating certificate. Please try again.', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching student data:', error);
+        // The error message here is more specific from the API.
+        showMessage('certError', `Could not retrieve student data: ${error.message}.`, 'error');
+    });
+}
+
+/* -------------------- DASHBOARD (DYNAMIC) -------------------- */
+let fundChart = null;
+const BACKEND_URL = 'http://127.0.0.1:5000/api/dashboard_data';
+
+/**
+ * Helper function to safely sanitize text input before inserting into HTML.
+ * @param {string | number} input - The raw data to sanitize.
+ * @returns {string} The HTML-safe string.
+ */
+function sanitizeInput(input) {
+    const inputString = String(input);
+    const div = document.createElement('div');
+    // Using textContent is the safest way to prevent XSS attacks
+    div.textContent = inputString; 
+    return div.innerHTML;
+}
+
+/**
+ * Handles error display across the dashboard UI.
+ * @param {string} errorMessage - The error message to display.
+ */
+function displayFetchError(errorMessage) {
+    console.error('Error fetching dashboard data:', errorMessage);
+    
+    // Update Student Dashboard Table
+    const dashboardBody = document.getElementById('dashboardBody');
+    if (dashboardBody) {
+        dashboardBody.innerHTML = `<tr><td colspan="4" class="text-danger">${errorMessage}. Please ensure the backend server is running.</td></tr>`;
+    }
+    
+    // Update Donation Stats
+    ['donationGoal', 'totalDonation'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = 'Error';
+    });
+
+    // Reset Progress Bar
+    const progressBar = document.getElementById('donationProgress');
+    if (progressBar) {
+        progressBar.style.width = '0%';
+        progressBar.setAttribute('aria-valuenow', 0);
+        progressBar.textContent = '0%';
+    }
+    
+    // Reset Recent Donations List
+    const listElement = document.getElementById('recentDonationsList');
+    if (listElement) {
+        listElement.innerHTML = '<li class="list-group-item text-center text-danger">Failed to load donations.</li>';
+    }
+    
+    // Reset Chart visibility
+    const chartCanvas = document.getElementById('fundChart');
+    const noDonationsMessage = document.getElementById('noDonationsMessage');
+    if (chartCanvas) chartCanvas.style.display = 'none';
+    if (noDonationsMessage) noDonationsMessage.style.display = 'block';
+}
+
+
+/**
+ * Fetches all dashboard data from the backend and calls update functions.
+ */
+function fetchDashboardData() {
+    fetch(BACKEND_URL)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('RAW DASHBOARD DATA:', data);
+
+        // --- Data Normalization and Type Casting ---
+        let studentsArray = Array.isArray(data.students) 
+            ? data.students 
+            : Object.values(data.students || {});
+
+        // Ensure all students have necessary numeric fields explicitly defined as Numbers or 0
+        studentsArray = studentsArray.map(s => ({
+            ...s,
+            progress: Number(s.progress) || 0,
+            donations_received: Number(s.donations_received) || 0,
+            donation_target_amount: Number(s.donation_target_amount) || 0,
+            // last_quiz_score can be null/undefined, handle gracefully
+            last_quiz_score: s.last_quiz_score === undefined || s.last_quiz_score === null ? 'N/A' : String(s.last_quiz_score),
+        }));
+
+        updateDashboard(studentsArray);
+        
+        // Pass the whole data object along with the cleaned student array
+        updateDonationDashboard({ 
+            ...data, 
+            students: studentsArray 
+        });
+
+        updateRecentDonations(data.recent_donations || []);
+    })
+    .catch(error => {
+        displayFetchError(error.message || 'Failed to connect to the backend server. Check CORS and network connection.');
+    });
+}
+
+function updateDashboard(studentsData) {
+    try {
+        if (!Array.isArray(studentsData)) {
+            console.warn('updateDashboard called with invalid data, resetting.');
+            studentsData = [];
+        }
+
+        const dashboardBody = document.getElementById('dashboardBody');
+        if (!dashboardBody) {
+            console.error('HTML element with ID "dashboardBody" (table <tbody>) not found.');
+            return;
+        }
+
+        dashboardBody.innerHTML = '';
+
+        if (studentsData.length === 0) {
+            dashboardBody.innerHTML = '<tr><td colspan="4" class="text-info">No student data available.</td></tr>';
+            return;
+        }
+
+        studentsData.forEach(student => {
+            const name = sanitizeInput(student.name || 'N/A');
+            const progressValue = Math.max(0, Math.min(100, Number(student.progress) || 0));
+            const lastQuizScore = student.last_quiz_score === undefined || student.last_quiz_score === null
+                ? 'N/A'
+                : sanitizeInput(student.last_quiz_score);
+            const donationsReceived = Number(student.donations_received) || 0;
+
+            dashboardBody.innerHTML += `
+                <tr>
+                    <td>${name}</td>
+                    <td>
+                        <div class="progress" style="min-width: 100px;">
+                            <div class="progress-bar bg-success rounded-lg" 
+                                style="width:${progressValue}%; transition: width 0.5s ease-in-out;" 
+                                role="progressbar" 
+                                aria-valuenow="${progressValue}" aria-valuemin="0" aria-valuemax="100">
+                                ${progressValue}%
+                            </div>
+                        </div>
+                    </td>
+                    <td>${lastQuizScore}</td>
+                    <td>₹${donationsReceived.toLocaleString('en-IN')}</td>
+                </tr>
+            `;
+        });
+    } catch (error) {
+        console.error('Error rendering student dashboard:', error);
+    }
+}
+
+
+
+/**
+ * Updates donation progress bar and fund allocation chart.
+ * @param {Object} data - Dashboard data including students, total_donations, and general_fund.
+ */
+function updateDonationDashboard(data) {
+    try {
+        const students = data.students || [];
+        const total_donations = Number(data.total_donations) || 0;
+        const general_fund = Number(data.general_fund) || 0;
+        
+        // Calculate total goal and funds
+        const totalStudentGoal = students.reduce((sum, s) => sum + s.donation_target_amount, 0);
+        const totalGoal = 100000; // Hardcoded goal from HTML as fallback, or use a dynamic value if available
+
+        // --- Update Summary Cards and Progress Bar ---
+        const totalGoalElement = document.getElementById('donationGoal');
+        const totalDonationElement = document.getElementById('totalDonation');
+        
+        if (totalDonationElement) totalDonationElement.textContent = `₹${total_donations.toLocaleString('en-IN')}`;
+        // Using the hardcoded goal from HTML
+        if (totalGoalElement) totalGoalElement.textContent = `₹${totalGoal.toLocaleString('en-IN')}`; 
+
+        // Update Progress Bar
+        const progressPercent = totalGoal > 0 ? Math.min(100, (total_donations / totalGoal) * 100) : 0;
+        const progressBar = document.getElementById('donationProgress');
+        if (progressBar) {
+            progressBar.style.width = `${progressPercent}%`;
+            progressBar.setAttribute('aria-valuenow', progressPercent);
+            progressBar.textContent = `${Math.floor(progressPercent)}%`;
+        }
+
+
+        // --- Chart Visibility and Logic ---
+        const chartCanvas = document.getElementById('fundChart');
+        const noDonationsMessage = document.getElementById('noDonationsMessage');
+        
+        // Data for the chart
+        const fundValues = [general_fund, ...students.map(s => s.donations_received)];
+        const hasDonationData = fundValues.some(v => v > 0); 
+
+        if (!chartCanvas || !noDonationsMessage) {
+            console.error("HTML element with ID 'fundChart' or 'noDonationsMessage' not found for charting.");
+            return;
+        }
+
+        if (hasDonationData) {
+            chartCanvas.style.display = 'block';
+            noDonationsMessage.style.display = 'none';
+            // FIX for continuous resizing (layout shift): 
+            // Explicitly set a stable height on the canvas to reserve space.
+            chartCanvas.style.minHeight = '300px'; 
+            chartCanvas.style.height = '300px'; 
+        } else {
+            chartCanvas.style.display = 'none';
+            noDonationsMessage.style.display = 'block';
+            // Clear height constraints when chart is hidden
+            chartCanvas.style.minHeight = ''; 
+            chartCanvas.style.height = ''; 
+            return;
+        }
+        
+        // Critical: Check if Chart.js is loaded
+        if (typeof Chart === 'undefined') {
+            console.error("CRITICAL ERROR: Chart.js library is not loaded. Ensure the script tag is included in your HTML.");
+            return;
+        }
+
+        const ctx = chartCanvas.getContext('2d');
+        if (!ctx) return; 
+
+        // Chart Data Prep
+        const fundLabels = ['General Fund', ...students.map(s => sanitizeInput(s.name))];
+        const backgroundColors = ['#007bff', '#28a745', '#ffc107', '#dc3545', '#17a2b8', '#6c757d', '#f8f9fa'];
+
+        if (fundChart) {
+            // Update existing chart instance
+            fundChart.data.labels = fundLabels;
+            fundChart.data.datasets[0].data = fundValues;
+            fundChart.data.datasets[0].backgroundColor = fundLabels.map((_, i) => backgroundColors[i % backgroundColors.length]);
+            fundChart.update();
+        } else {
+            // Create new chart instance
+            fundChart = new Chart(ctx, {
+                type: 'bar', 
+                data: {
+                    labels: fundLabels,
+                    datasets: [{
+                        label: 'Funds Received (₹)',
+                        data: fundValues,
+                        backgroundColor: fundLabels.map((_, i) => backgroundColors[i % backgroundColors.length]),
+                        borderColor: '#343a40',
+                        borderWidth: 1,
+                        borderRadius: 5,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        title: {
+                            display: true,
+                            text: 'Fund Allocation per Student',
+                            color: '#343a40',
+                            font: { size: 16, weight: 'bold' }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Amount (₹)', color: '#343a40' },
+                            ticks: { color: '#343a40' },
+                            grid: { color: 'rgba(52, 58, 64, 0.2)' }
+                        },
+                        x: {
+                            ticks: { color: '#343a40' },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+    } catch (error) {
+        console.error('Error updating donation dashboard:', error);
+    }
+}
+
+/**
+ * Updates the recent donations list.
+ * @param {Array<Object>} recentDonationsData - List of recent donation objects.
+ */
+function updateRecentDonations(recentDonationsData) {
+    // ID Check: This matches the corrected HTML ID: recentDonationsList
+    const listElement = document.getElementById('recentDonationsList');
+    if (!listElement) {
+        console.error("HTML element with ID 'recentDonationsList' not found for Recent Donations.");
+        return;
+    }
+
+    listElement.innerHTML = ''; // Clear existing list
+
+    if (recentDonationsData.length === 0) {
+        listElement.innerHTML = '<li class="list-group-item text-center text-muted">No recent donations to display.</li>';
+        return;
+    }
+
+    recentDonationsData.forEach(donation => {
+        // Determine the target name
+        const targetValue = donation.donation_target; 
+        const targetText = targetValue === 'general' 
+            ? 'General Fund' 
+            : `Student ID ${targetValue}`; 
+
+        // Format the date safely
+        let formattedDate = 'N/A';
+        try {
+            const date = new Date(donation.donation_date);
+            if (!isNaN(date.getTime())) { // Check if date is valid
+                formattedDate = date.toLocaleDateString('en-IN', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+            }
+        } catch (e) {
+            console.warn('Invalid date format for recent donation:', donation.donation_date);
+        }
+
+        const amount = Number(donation.amount) || 0;
+
+        listElement.innerHTML += `
+            <li class="list-group-item d-flex justify-content-between align-items-center py-2 px-3">
+                <div class="flex-grow-1">
+                    <strong class="text-primary">${sanitizeInput(donation.donor_name)}</strong>
+                    <small class="d-block text-muted">for ${targetText}</small>
+                </div>
+                <div class="text-end">
+                    <span class="badge bg-success text-white">₹${amount.toLocaleString('en-IN')}</span>
+                    <small class="d-block text-secondary mt-1">${formattedDate}</small>
+                </div>
+            </li>
+        `;
+    });
+}
+
+// Start the data fetch process when the document is fully loaded
+document.addEventListener('DOMContentLoaded', fetchDashboardData);
+
+
+
+/* -------------------- LEADERBOARD -------------------- */
+async function updateLeaderboards() {
+  try {
+    const response = await fetch('http://localhost:5000/api/leaderboard_data');
+    if (!response.ok) throw new Error('Failed to fetch leaderboard data');
+    
+    const data = await response.json();
+
+    // --- Donor Leaderboard ---
+    const donorLeaderboard = document.getElementById('donorLeaderboard');
+    if (donorLeaderboard) {
+      if (data.donors.length === 0) {
+        donorLeaderboard.innerHTML = '<li class="list-group-item bg-transparent text-light border-secondary">No donors yet.</li>';
+      } else {
+        donorLeaderboard.innerHTML = data.donors
+          .map(d => `<li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-light border-secondary"><strong>${sanitizeInput(d.name)}</strong><span>₹${d.total_donated}</span></li>`)
+          .join('');
+      }
+    }
+
+    // --- Volunteer Leaderboard ---
+    const volunteerLeaderboard = document.getElementById('volunteerLeaderboard');
+    if (volunteerLeaderboard) {
+      if (data.volunteers.length === 0) {
+        volunteerLeaderboard.innerHTML = '<li class="list-group-item bg-transparent text-light border-secondary">No volunteers yet.</li>';
+      } else {
+        volunteerLeaderboard.innerHTML = data.volunteers
+          .map(v => `<li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-light border-secondary"><strong>${sanitizeInput(v.name)}</strong><span>${v.points} Points</span></li>`)
+          .join('');
+      }
+    }
+  } catch (error) {
+    console.error('Error updating leaderboards:', error);
+  }
+}
+
+
+/* -------------------- STORIES -------------------- */
+function addStory(event) {
+    if (event) event.preventDefault();
+
+    const fields = [
+        { id: 'storyName', name: 'Name', required: true, messageId: 'storyMsg' },
+        { id: 'storyTitle', name: 'Story title', required: true, messageId: 'storyMsg' },
+        { id: 'storyText', name: 'Story text', required: true, messageId: 'storyMsg' }
+    ];
+
+    if (!validateForm(fields)) return;
+
+    const name = document.getElementById('storyName').value.trim();
+    const title = document.getElementById('storyTitle').value.trim();
+    const text = document.getElementById('storyText').value.trim();
+
+    fetch('http://127.0.0.1:5000/api/add_story', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            name: name,
+            title: title,
+            text: text
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Success:', data);
+        showMessage('storyMsg', 'Thank you for sharing your story!', 'success');
+        
+        // Clear form after successful submission
+        document.getElementById('storyName').value = '';
+        document.getElementById('storyTitle').value = '';
+        document.getElementById('storyText').value = '';
+
+        // Fetch and load the updated list of stories from the backend
+        loadStories();
+    })
+    .catch(error => {
+        console.error('Error adding story:', error);
+        showMessage('storyMsg', 'Error sharing your story. Please try again later.', 'error');
+    });
+}
+
+function loadStories() {
+    fetch('http://127.0.0.1:5000/api/stories')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(stories => {
+        const storiesList = document.getElementById('storiesList');
+        if (!storiesList) return;
+
+        if (!Array.isArray(stories)) {
+            console.error("Expected stories to be an array, but received:", stories);
+            return;
+        }
+
+        if (stories.length === 0) {
+            storiesList.innerHTML = '<p class="text-center text-gray-400 italic">No stories yet. Be the first to share yours!</p>';
+        } else {
+            storiesList.innerHTML = stories
+                .map(story => `
+                    <div class="p-4 bg-gray-700 rounded-lg shadow-sm">
+                        <h4 class="text-lg font-bold">${sanitizeInput(story.title)}</h4>
+                        <p class="text-sm text-gray-400 mb-2">by ${sanitizeInput(story.name)} on ${story.submission_date}</p>
+                        <p class="text-gray-200 leading-relaxed">${sanitizeInput(story.story_text)}</p>
+                    </div>
+                `)
+                .join('');
+        }
+    })
+    .catch(error => console.error('Error fetching stories:', error));
+}
+
+
+/* -------------------- CONTACT -------------------- */
+async function sendContact(event) {
+    if (event) event.preventDefault();
+
+    const fields = [
+        { id: 'conName', name: 'Name', required: true, messageId: 'conAck' },
+        { id: 'conEmail', name: 'Email', required: true, type: 'email', messageId: 'conAck' },
+        { id: 'conMsg', name: 'Message', required: true, messageId: 'conAck' }
+    ];
+
+    if (!validateForm(fields)) return;
+
+    const name = document.getElementById('conName').value;
+    const email = document.getElementById('conEmail').value;
+    const message = document.getElementById('conMsg').value;
+
+    try {
+        const response = await fetch('http://127.0.0.1:5000/api/send_contact', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ name, email, message })
+        });
+
+        if (response.ok) {
+            showMessage('conAck', 'Thank you for your message! We will get back to you soon.', 'success');
+            document.getElementById('conName').value = '';
+            document.getElementById('conEmail').value = '';
+            document.getElementById('conMsg').value = '';
+        } else {
+            const errorData = await response.json();
+            throw new Error(errorData.message || `Server error: ${response.status}`);
+        }
+    } catch (error) {
+        console.error('Error sending contact:', error);
+        showMessage('conAck', `Error sending message: ${error.message}. Please try again.`, 'error');
+    }
+}
+
+/* -------------------- AI QUIZ GENERATION -------------------- */
+async function generateQuizWithAI(event) {
+  if (event) event.preventDefault();
+
+  const topic = document.getElementById('customTopic').value.trim();
+  const loader = document.getElementById('quizLoader');
+  const errorDiv = document.getElementById('aiQuizError');
+  const quizDiv = document.getElementById('quiz');
+
+  if (!topic) {
+    showMessage('aiQuizError', 'Please enter a topic to generate a quiz.', 'error');
+    return;
+  }
+
+  if (loader) loader.classList.remove('d-none');
+  if (errorDiv) errorDiv.innerHTML = '';
+  if (quizDiv) quizDiv.innerHTML = '';
+
+  const prompt = `Generate a 5-question multiple-choice quiz about ${topic}.
+Each question should have 4 options and a single correct answer.
+The response must be a JSON array of objects.
+Example JSON format:
+[
+  {
+    "question": "What is the capital of France?",
+    "options": ["Berlin", "Madrid", "Paris", "Rome"],
+    "answer": "Paris"
+  }
+]`;
+
+  const apiKey = "AIzaSyCP-P2Fa7U5MjaC2hrp_omvycjIqnyTk-0"; // ⚠️ REPLACE WITH YOUR ACTUAL API KEY
+
+  if (apiKey === "YOUR_API_KEY_HERE") {
+    showMessage('aiQuizError', 'AI quiz generation requires a valid API key. Please visit the Google AI Studio documentation to get one.', 'error');
+    if (loader) loader.classList.add('d-none');
+    return;
+  }
+
+  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+  
+  const payload = {
+    contents: [{ parts: [{ text: prompt }] }]
+  };
+
+  try {
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+      throw new Error(`API returned an error: ${response.status} ${response.statusText}`);
+    }
+
+    const result = await response.json();
+    const jsonString = result.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    if (!jsonString) {
+      throw new Error('No quiz data received from API. The response was empty or malformed.');
+    }
+
+    const cleanedJsonString = jsonString.replace(/```json|```/g, '').trim();
+
+    const generatedQuiz = JSON.parse(cleanedJsonString);
+
+    if (!Array.isArray(generatedQuiz) || generatedQuiz.length === 0) {
+      throw new Error('Invalid quiz format received from API.');
+    }
+
+    for (const q of generatedQuiz) {
+      if (!q.question || !Array.isArray(q.options) || !q.answer || q.options.length !== 4) {
+        throw new Error('Invalid question format in generated quiz.');
+      }
+    }
+
+    currentQuiz = generatedQuiz;
+    renderQuiz();
+
+    const titleElement = document.getElementById('topicTitle');
+    const descElement = document.getElementById('topicDescription');
+    const videoElement = document.getElementById('topicVideo');
+
+    if (titleElement) titleElement.textContent = topic;
+    if (descElement) descElement.textContent = 'A dynamically generated quiz.';
+    if (videoElement) videoElement.src = '';
+
+    document.getElementById('quizResult').textContent = '';
+    document.getElementById('customTopic').value = '';
+
+  } catch (error) {
+    console.error('Failed to generate quiz:', error);
+    showMessage('aiQuizError', `Failed to generate quiz: ${error.message}. Please try a different topic.`, 'error');
+  } finally {
+    if (loader) loader.classList.add('d-none');
+  }
+}
+
+// Initial load
+window.onload = () => {
+  load();
+  showSection('home');
+  fetchDashboardData();
+  updateDonorList();
+};
+</script>
+
+</body>
+</html>
